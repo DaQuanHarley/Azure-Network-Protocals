@@ -33,7 +33,7 @@ In this guide, we observe various network traffic to and from Azure Virtual Mach
 <h2>Actions and Observations</h2>
 
 
-Create a resource group so we can put both of our virtual machines in. Then, make our first virtual machine. The first virtual machine we are going to make is a Windows 10 VM. Select the resource you made, and then name the virtual machine. Make sure you select Windows 10 Pro, version 22H, as the operating system. As for the size of the machine, we are going to want at least 2 vCPUs. Create a username and password of your choice, and keep the inbound port rules as the default options.
+Create a resource group so we can put both of our virtual machines in it. Then, make our first virtual machine. The first virtual machine we are going to make is a Windows 10 VM. Select the resource you made, and then name the virtual machine. Make sure you select Windows 10 Pro, version 22H, as the operating system. As for the size of the machine, we are going to want at least 2 vCPUs. Create a username and password of your choice, and keep the inbound port rules as the default options.
 
 <p>
 <img src="https://i.imgur.com/Dya86IN.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -85,11 +85,11 @@ Now that we have created our first VM, we are going to go ahead and create our s
  
  Click review and create, and it will create our second VM.
  
-Connect to our Windows 10 VM using the Remote Desktop Connection app. Once we are connected, go to the browser, download and install Wireshark.
+Connect to our Windows 10 VM using the Remote Desktop Connection app. Once we are connected, go to the browser download and install Wireshark.
  
  "Wireshark is a free and open-source packet analyzer. It is used for network troubleshooting, analysis, software and communications protocol development, and education." 
  
-Open Wireshark, highlight ethernet then click on the shark fin, and filter for ICMP traffic only.
+Open Wireshark, highlight Ethernet then click on the shark fin, and filter for ICMP traffic only.
  
  <p>
 <img src="https://i.imgur.com/MlRcsSy.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -99,7 +99,7 @@ Open Wireshark, highlight ethernet then click on the shark fin, and filter for I
 </p>
 <p>
  
-We are going to want to retrieve the private IP address of our Ubuntu VM and then attempt to ping it from within our Windows 10 VM using wireshark. To ping the private IP address of the Ubuntu machine open CMD or Powershell on the Windows machine and type: ping 10.0.0.5 or whatever the private IP address is for your Ubuntu machine.
+We are going to want to retrieve the private IP address of our Ubuntu VM and then attempt to ping it from within our Windows 10 VM using Wireshark. To ping the private IP address of the Ubuntu machine, open CMD or Powershell on the Windows machine and type: ping 10.0.0.5 or whatever the private IP address is for your Ubuntu machine.
  
 <p>
 <img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -113,7 +113,7 @@ We are going to want to retrieve the private IP address of our Ubuntu VM and the
  
 Now we are going to initiate a non-stop ping from our Windows 10 VM to our Ubuntu VM.
  
-Open the Network Security Group of our Ubuntu machine and disable incoming (inbound) ICMP traffic. To disable incoming ICMP traffic click "Add" new rule and copy everything exactly from the picture. Once that is done you can create the rule and it will create automatically and show up as a new rule.
+Open the Network Security Group of our Ubuntu machine and disable incoming (inbound) ICMP traffic. To disable incoming ICMP traffic, click "Add" a new rule and copy everything exactly from the picture. Once that is done, you can create the rule and it will create automatically and show up as a new rule.
  
  <p>
 <img src="https://i.imgur.com/s6vZovU.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -128,15 +128,15 @@ Open the Network Security Group of our Ubuntu machine and disable incoming (inbo
 </p>
 <p>
  
- Now that we have disabled incoming ICMP traffic from Linux VM if we go back to Windows VM you can see the ping request is timing out. 
+ Now that we have disabled incoming ICMP traffic from the Linux VM, if we go back to Windows VM, you can see the ping request is timing out. 
  
-Re-enable ICMP traffic for the Network Security Group your Ubuntu VM is using
-Back in the Windows 10 VM, observe the ICMP traffic in WireShark and the command line Ping activity (should start working)
+Re-enable ICMP traffic for the Network Security Group that your Ubuntu VM is using
+Back in the Windows 10 VM, observe the ICMP traffic in Wireshark and the command line Ping activity (should start working)
 Stop the ping activity
 
  
 <h2>The next thing we are going to do is Observe SSH Traffic.</h2>
- Back in wireshark, start a packet capture up and filter for ssh traffic only
+ Back in Wireshark, start a packet capture and filter for SSH traffic only
  
  <p>
 <img src="https://i.imgur.com/P5rwTFd.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
@@ -163,93 +163,41 @@ Powershell/CMD should ask "Are you sure you want to continue connecting (yes/no/
 <img src="https://i.imgur.com/vvuEIeh.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
-Exit the SSH connection by typing 'exit' and pressing [enter]
+Exit the SSH connection by typing 'exit' and pressing [Enter]
  <p>
 <img src="https://i.imgur.com/vsHqpls.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
 
+  
+<h2>Observe DHCP Traffic</h2>
+
+ Back in Wireshark, filter for DHCP traffic only
  <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/OdV7daQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+From the Windows 10 VM, attempt to issue the VM a new IP address from the command line
+ <p>
+<p>
+  Open PowerShell as an admin and run: ipconfig /renew
+  <p/>
+<img src="https://i.imgur.com/dQC0GYr.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+ Observe the DHCP traffic appearing in Wireshark
+ <p>
+<img src="https://i.imgur.com/0K8HnLi.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
+<h2>$\color{Red}\Huge{\textbf{Lab Cleanup (IF ONLY USED FOR TEST PURPOSES)}}$</h2>
+
+ <p>Close your Remote Desktop connection</p>
+
+ Delete the Resource Group(s) created at the beginning of this lab
  
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- <p>
-<img src="https://i.imgur.com/aKKd25e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+ Verify Resource Group Deletion
  
  
  
